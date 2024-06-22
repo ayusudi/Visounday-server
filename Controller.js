@@ -1,4 +1,3 @@
-const serviceAccount = require("./serviceAccountKey.json");
 const { SECRET_JWT } = process.env
 
 const User = require('./models/User')
