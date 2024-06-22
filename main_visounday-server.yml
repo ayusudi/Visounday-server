@@ -45,8 +45,8 @@ jobs:
           envkey_SERVICEKEY_CLIENTCERT: ${{ secrets.SERVICEKEY_CLIENTCERT }}
           envkey_SERVICEKEY_DOMAIN: ${{ secrets.SERVICEKEY_DOMAIN }}
           envkey_CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          envkey_CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          envkey_CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
           directory: .env
           filename: .env
       - name: Login to Docker Hub
