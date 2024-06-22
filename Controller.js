@@ -118,6 +118,7 @@ class Controller {
       let data = await Video.create({ cover, frames, cloudinaryId, url, description: '', gpt: '', tags, JSON: '{}', user: req.user.id })
       res.status(201).json(data)
     } catch (error) {
+      console.log(error);
       next(error)
     }
   }
@@ -134,7 +135,7 @@ class Controller {
       );
       return result
     } catch (error) {
-      next(error)
+      console.log(error);
     }
   }
   static async videoIndexImage(req, res, next) {
@@ -170,6 +171,7 @@ class Controller {
       const videos = await Video.find({ user: userId })
       res.status(200).json(videos)
     } catch (error) {
+
       next(error)
     }
   }
