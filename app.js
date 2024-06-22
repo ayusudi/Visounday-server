@@ -26,6 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const mongoUri = `mongodb://${COSMOSDB_USER}:${COSMOSDB_PASSWORD}@${COSMOSDB_HOST}:${COSMOSDB_PORT}/${COSMOSDB_DBNAME}?retryWrites=false&ssl=true&replicaSet=globaldb`;
 
+app.get("/", (req, res) => res.send("Welcome to Visounday Server"))
 app.post("/verify", Controller.verifyIdToken)
 app.get("/videos", authentication, Controller.listVideo)
 app.post("/videos", authentication, Controller.upload)

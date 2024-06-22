@@ -18,11 +18,42 @@ const searchImages = require('./helpers/bingAPI');
 const promptVisounday = require('./helpers/promptVisounday')
 const chatGPTAzureOpenAI = require('./helpers/chatGPTAzureOpenAI')
 
-const { FIREBASE_APIKEY, FIREBASE_AUTHDOMAIN, FIREBASE_PROJECTID, FIREBASE_APPID, FIREBASE_MEASUREMENTID } = process.env
+const {
+  FIREBASE_APIKEY,
+  FIREBASE_AUTHDOMAIN,
+  FIREBASE_PROJECTID,
+  FIREBASE_APPID,
+  FIREBASE_MEASUREMENTID,
+  SERVICEKEY_TYPE,
+  SERVICEKEY_PROJECTID,
+  SERVICEKEY_PRIVATEKEY_ID,
+  SERVICEKEY_PRIVATEKEY,
+  SERVICEKEY_EMAIL,
+  SERVICEKEY_CLIENTID,
+  SERVICEKEY_AUTHURI,
+  SERVICEKEY_TOKENURI,
+  SERVICEKEY_AUTHCERT,
+  SERVICEKEY_CLIENTCERT,
+  SERVICEKEY_DOMAIN
+} = process.env
 
 const outputDir = path.join(__dirname, 'frames');
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir);
+}
+
+let serviceAccount = {
+  "type": SERVICEKEY_TYPE,
+  "project_id": SERVICEKEY_PROJECTID,
+  "private_key_id": SERVICEKEY_PRIVATEKEY_ID,
+  "private_key": SERVICEKEY_PRIVATEKEY,
+  "client_email": SERVICEKEY_EMAIL,
+  "client_id": SERVICEKEY_CLIENTID,
+  "auth_uri": SERVICEKEY_AUTHURI,
+  "token_uri": SERVICEKEY_TOKENURI,
+  "auth_provider_x509_cert_url": SERVICEKEY_AUTHCERT,
+  "client_x509_cert_url": SERVICEKEY_CLIENTCERT,
+  "universe_domain": SERVICEKEY_DOMAIN
 }
 
 admin.initializeApp({
