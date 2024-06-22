@@ -1,69 +1,58 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy Node.js app to Azure Web App - visounday-server
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
-
 jobs:
-  build:
+  create-envfile:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v2.0
         with:
-          node-version: '20.x'
+          envkey_PORT: ${{ secrets.PORT }}
+          envkey_SECRET_JWT: ${{ secrets.SECRET_JWT }}
+          envkey_COSMOSDB_HOST: ${{ secrets.COSMOSDB_HOST }}
+          envkey_COSMOSDB_PORT: ${{ secrets.COSMOSDB_PORT }}
+          envkey_COSMOSDB_DBNAME: ${{ secrets.COSMOSDB_DBNAME }}
+          envkey_COSMOSDB_USER: ${{ secrets.COSMOSDB_USER }}
+          envkey_COSMOSDB_PASSWORD: ${{ secrets.COSMOSDB_PASSWORD }}
+          envkey_FIREBASE_APIKEY: ${{ secrets.FIREBASE_APIKEY }}
+          envkey_FIREBASE_AUTHDOMAIN: ${{ secrets.FIREBASE_AUTHDOMAIN }}
+          envkey_FIREBASE_PROJECTID: ${{ secrets.FIREBASE_PROJECTID }}
+          envkey_FIREBASE_APPID: ${{ secrets.FIREBASE_APPID }}
+          envkey_FIREBASE_MEASUREMENTID: ${{ secrets.FIREBASE_MEASUREMENTID }}
+          envkey_BING_SUBSCRIPTIONKEY: ${{ secrets.BING_SUBSCRIPTIONKEY }}
+          envkey_AZUREOPENAI_ENDPOINT: ${{ secrets.AZUREOPENAI_ENDPOINT }}
+          envkey_AZUREOPENAI_APIKEY: ${{ secrets.AZUREOPENAI_APIKEY }}
+          envkey_AZUREOPENAI_ENDPOINT_ALT: ${{ secrets.AZUREOPENAI_ENDPOINT_ALT }}
+          envkey_AZUREOPENAI_APIKEY_ALT: ${{ secrets.AZUREOPENAI_APIKEY_ALT }}
+          envkey_CVAZURE_SUBSCRIPTIONKEY: ${{ secrets.CVAZURE_SUBSCRIPTIONKEY }}
+          envkey_CVAZURE_ENDPOINT: ${{ secrets.CVAZURE_ENDPOINT }}
+          envkey_SERVICEKEY_TYPE: ${{ secrets.SERVICEKEY_TYPE }}
+          envkey_SERVICEKEY_PROJECTID: ${{ secrets.SERVICEKEY_PROJECTID }}
+          envkey_SERVICEKEY_PRIVATEKEY_ID: ${{ secrets.SERVICEKEY_PRIVATEKEY_ID }}
+          envkey_SERVICEKEY_PRIVATEKEY: ${{ secrets.SERVICEKEY_PRIVATEKEY }}
+          envkey_SERVICEKEY_EMAIL: ${{ secrets.SERVICEKEY_EMAIL }}
+          envkey_SERVICEKEY_CLIENTID: ${{ secrets.SERVICEKEY_CLIENTID }}
+          envkey_SERVICEKEY_AUTHURI: ${{ secrets.SERVICEKEY_AUTHURI }}
+          envkey_SERVICEKEY_TOKENURI: ${{ secrets.SERVICEKEY_TOKENURI }}
+          envkey_SERVICEKEY_AUTHCERT: ${{ secrets.SERVICEKEY_AUTHCERT }}
+          envkey_SERVICEKEY_CLIENTCERT: ${{ secrets.SERVICEKEY_CLIENTCERT }}
+          envkey_SERVICEKEY_DOMAIN: ${{ secrets.SERVICEKEY_DOMAIN }}
+          directory: .env
+          filename: .env
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: npm install, build, and test
+      - name: Build and push Docker image
         run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
-        with:
-          name: node-app
-          path: release.zip
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v3
-        with:
-          name: node-app
-
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
-
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_08B34334C9FD422AA171A6CEADC451EA }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_53CDB1DA351A4558BC39CFF1216C601C }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_872123ED92D4460DA7F20DADDD6030FA }}
-
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'visounday-server'
-          slot-name: 'Production'
-          package: .
+          docker build . -t ${{ secrets.DOCKERHUB_USERNAME }}/BELUM_DIISI:1
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/BELUM_DIISI:1
