@@ -11,6 +11,7 @@ const admin = require("firebase-admin");
 const path = require('path');
 const fs = require('fs');
 
+const serviceAccountKey = require('./serviceAccountKey.json')
 const computerVision = require('./helpers/computerVision');
 const createCollage = require('./helpers/collagePhoto');
 const searchImages = require('./helpers/bingAPI');
@@ -22,18 +23,7 @@ const {
   FIREBASE_AUTHDOMAIN,
   FIREBASE_PROJECTID,
   FIREBASE_APPID,
-  FIREBASE_MEASUREMENTID,
-  SERVICEKEY_TYPE,
-  SERVICEKEY_PROJECTID,
-  SERVICEKEY_PRIVATEKEY_ID,
-  SERVICEKEY_PRIVATEKEY,
-  SERVICEKEY_EMAIL,
-  SERVICEKEY_CLIENTID,
-  SERVICEKEY_AUTHURI,
-  SERVICEKEY_TOKENURI,
-  SERVICEKEY_AUTHCERT,
-  SERVICEKEY_CLIENTCERT,
-  SERVICEKEY_DOMAIN
+  FIREBASE_MEASUREMENTID
 } = process.env
 
 const outputDir = path.join(__dirname, 'frames');
@@ -41,22 +31,8 @@ if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir);
 }
 
-let serviceAccount = {
-  "type": SERVICEKEY_TYPE,
-  "project_id": SERVICEKEY_PROJECTID,
-  "private_key_id": SERVICEKEY_PRIVATEKEY_ID,
-  "private_key": SERVICEKEY_PRIVATEKEY,
-  "client_email": SERVICEKEY_EMAIL,
-  "client_id": SERVICEKEY_CLIENTID,
-  "auth_uri": SERVICEKEY_AUTHURI,
-  "token_uri": SERVICEKEY_TOKENURI,
-  "auth_provider_x509_cert_url": SERVICEKEY_AUTHCERT,
-  "client_x509_cert_url": SERVICEKEY_CLIENTCERT,
-  "universe_domain": SERVICEKEY_DOMAIN
-}
-
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(serviceAccountKey),
   apiKey: FIREBASE_APIKEY,
   authDomain: FIREBASE_AUTHDOMAIN,
   projectId: FIREBASE_PROJECTID,
@@ -142,7 +118,7 @@ class Controller {
     const { cloudinaryId } = req.params;
     try {
       const video = await Video.findOne({ cloudinaryId });
-      if (video.user !== req.user.id) throw { status: 403, name: 'Forbidden' }
+      if (video.user.toString() !== req.user.id) throw { status: 403, name: 'Forbidden' }
       if (!video) {
         return res.status(404).json({ error: 'Video not found' });
       }
@@ -226,7 +202,7 @@ class Controller {
       if (!video) {
         return res.status(404).json({ error: 'Video not found' });
       }
-      if (video.user !== req.user.id) throw { status: 403, name: 'Forbidden' }
+      if (video.user.toString() !== req.user.id) throw { status: 403, name: 'Forbidden' }
       if (!video.gpt.length) {
         video.gpt = `OPEN: ${new Date().toISOString()};`
         let gptChats = [
