@@ -72,6 +72,8 @@ Short explanation of visounday server API.
 
 ##  How to Run the Application 
 
+> **You need serviceAccountKey.json for Microsoft Social Login from Firebase**
+
 **Use Docker & Create .env` based `.env.template`**
 
 **OR**
