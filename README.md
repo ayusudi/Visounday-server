@@ -1,6 +1,6 @@
 # Visounday Server 
 
-[https://visounday2024.azurewebsites.net/](https://visounday2024.azurewebsites.net/)
+[https://visoundayserver.azurewebsites.net/](https://visoundayserver.azurewebsites.net/)
 
 ## Topics 
 - Tech Stack 
