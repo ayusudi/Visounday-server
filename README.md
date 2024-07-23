@@ -26,9 +26,6 @@
 
 ## Schema DB
 
-Sure, I'll explain the schema in simpler terms:
-
-
 ### User Schema
 - **name**: Stores the user's name.
 - **email**: Stores the user's email address, validated to ensure it matches a standard email format.
